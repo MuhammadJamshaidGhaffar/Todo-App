@@ -1,0 +1,22 @@
+.addTodoDiv {
+  height: fit-content;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 24rem;
+  padding: 3rem 1rem;
+  box-shadow: 0px 0px 5px grey;
+  border-radius: 1rem;
+  position: relative;
+}
+.addTodoDiv .child {
+  display: block;
+  margin: 0.2rem;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
