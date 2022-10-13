@@ -37,7 +37,7 @@ const Settings = () => {
     netlifyIdentity.on("");
     netlifyIdentity.init({});
     if (netlifyIdentity.currentUser() === null)
-      window.location.replace("login");
+      window.location.replace("/login");
     else {
       //-------- updating the general settings array -------------
       updateGeneralSettings(netlifyIdentity.currentUser());
@@ -239,21 +239,43 @@ async function UpdateUserData(attribute) {
     console.log("[Inside UpdateUserData()]  Error ! : ", err);
   }
 }
+// async function UpdateUserPassword(new_password) {
+//   const auth = new GoTrue({
+//     APIUrl: netlifyIdentity.currentUser().api.apiURL,
+//   });
+//   try {
+//     const user = auth.currentUser();
+//     console.log("[Inside UpdatPassword()] Go true =>  ", user);
+//     console.log("updating user ");
+//     const response = await user.update({
+//       email: user.email,
+//       password: new_password,
+//     });
+//     console.log("[Inside UpdatePassword()] User Password Updated : ", response);
+//     return user;
+//   } catch (err) {
+//     console.log("[Inside UpdatePassword()]  Error ! : ", err);
+//   }
+// }
 async function UpdateUserPassword(new_password) {
-  const auth = new GoTrue({
-    APIUrl: netlifyIdentity.currentUser().api.apiURL,
-  });
   try {
-    const user = auth.currentUser();
-    console.log("[Inside UpdatPassword()] Go true =>  ", user);
-    console.log("updating user ");
-    const response = await user.update({
-      email: user.email,
-      password: new_password,
+    const response = await fetch("/.netlify/functions/change_password", {
+      method: "POST",
+      body: JSON.stringify({
+        new_password,
+      }),
+      headers: {
+        Authorization: `Bearer ${
+          netlifyIdentity.currentUser().token.access_token
+        }`,
+      },
     });
-    console.log("[Inside UpdatePassword()] User Password Updated : ", response);
-    return user;
+    if (response.status == 200) {
+      const user = await response.json();
+      return user;
+    } else throw new Error("Failed to updated password");
   } catch (err) {
     console.log("[Inside UpdatePassword()]  Error ! : ", err);
+    throw new Error(err);
   }
 }

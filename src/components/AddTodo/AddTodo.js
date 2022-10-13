@@ -63,6 +63,7 @@ const AddTodo = ({ style, userData, setUserData, setNewTodoClicked }) => {
       console.log("data updated");
       console.log(response);
       setUserData(response);
+      setNewTodoClicked(false);
     } catch (err) {
       console.log(err);
     }

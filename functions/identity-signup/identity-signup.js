@@ -1,5 +1,6 @@
 const { ApolloClient, InMemoryCache, gql } = require("@apollo/client");
 const faunadb = require("faunadb");
+const { v4: uuidv4 } = require("uuid");
 
 exports.handler = async (event, context, callback) => {
   const { user } = JSON.parse(event.body);
@@ -32,6 +33,7 @@ exports.handler = async (event, context, callback) => {
     user_metadata: {
       ...user.user_metadata,
       ref: response.ref.value.id,
+      password_token: uuidv4(),
     },
   };
   console.log("Just before the callback- reaching the end of function");

@@ -4,6 +4,9 @@ exports.handler = async (event, context) => {
   let dataFromCustomFetch = "";
   try {
     const { identity, user } = context.clientContext;
+    const usersUrl = `${identity.url}/admin/users`;
+    const adminAuthHeader = `Bearer ${identity.token}`;
+
     // const users = await (
     //   await fetch(`${identity.url}/admin/users`, {
     //     headers: {
@@ -16,14 +19,12 @@ exports.handler = async (event, context) => {
         "testing custom fetch to https://jamshaid-todo-app.netlify.app/.netlify/identity/admin/users/"
       );
       dataFromCustomFetch = await (
-        await fetch(
-          `https://jamshaid-todo-app.netlify.app/.netlify/identity/admin/users/`,
-          {
-            headers: {
-              Authorization: `Bearer ${identity.access_token}`,
-            },
-          }
-        )
+        await fetch(usersUrl, {
+          method: "GET",
+          headers: {
+            Authorization: adminAuthHeader,
+          },
+        })
       ).json();
       console.log("dataFromCustomFetch : ", dataFromCustomFetch);
     } catch (error) {

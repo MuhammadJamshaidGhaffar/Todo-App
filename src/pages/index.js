@@ -41,7 +41,7 @@ const Index = () => {
     //------redirect if not logged in ------------
     netlifyIdentity.init({});
     if (netlifyIdentity.currentUser() === null)
-      window.location.replace("login");
+      window.location.replace("/login");
 
     console.log("Netlify Identity : ", netlifyIdentity.currentUser());
     //--------- Getting data from fauna db ------------------
@@ -66,9 +66,9 @@ const Index = () => {
         console.log(err);
       }
     }
-    // if (userData === null) {
-    //   getUserData();
-    // }
+    if (userData === null) {
+      getUserData();
+    }
   });
   //------------ identity triggered functions -------------------------------
   netlifyIdentity.on("logout", () => {
@@ -80,6 +80,30 @@ const Index = () => {
     setEditingTodo("");
     setEditingPlace("");
     setEditingDateTime(0);
+  }
+  async function deleteTodo(index) {
+    try {
+      const response = await fetch(
+        `/.netlify/functions/delete_todo?index=${index}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${
+              netlifyIdentity.currentUser().token.access_token
+            }`,
+          },
+        }
+      );
+      if (response.status == 200) {
+        const user_data = await response.json();
+        console.log(user_data);
+        setUserData(user_data);
+      } else {
+        throw new Error("Failed to delete user : ", await response.text());
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
   //-------------------------------------------------------------------------------
   //----------------------------- RENDERING ---------------------------------------
@@ -280,6 +304,14 @@ const Index = () => {
                         .unix(elm.date_time)
                         .format("D-MMM-YYYY  dddd hh:mm:s A")}
                     </div>
+                    {/* Button to delete this todo */}
+                    <button
+                      onClick={() => {
+                        deleteTodo(index);
+                      }}
+                    >
+                      Delete
+                    </button>
                   </AccordionDetails>
                 </Accordion>
               );

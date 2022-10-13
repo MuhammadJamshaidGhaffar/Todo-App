@@ -1,0 +1,14 @@
+{
+  "name": "delete_todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "delete_todo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "faunadb": "^4.7.0"
+  }
+}
